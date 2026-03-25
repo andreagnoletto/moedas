@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="h-full bg-gray-50">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}CoinsDB{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+  <script src="https://unpkg.com/alpinejs@3.14.8/dist/cdn.min.js" defer></script>
+  <style>
+    [x-cloak] { display: none !important; }
+    .htmx-request #results { opacity: 0.5; transition: opacity 200ms; }
+  </style>
+</head>
+<body class="h-full" x-data="{ mobileMenu: false }">
+
+<nav class="bg-gray-900">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between">
+      <div class="flex items-center gap-8">
+        <a href="{% url 'dashboard' %}" class="text-amber-400 font-bold text-xl tracking-tight">🪙 CoinsDB</a>
+        <div class="hidden md:flex gap-1">
+          {% with request.resolver_match.url_name as current %}
+          <a href="{% url 'dashboard' %}" class="rounded-md px-3 py-2 text-sm font-medium {% if current == 'dashboard' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">Dashboard</a>
+          <a href="{% url 'country-list' %}" class="rounded-md px-3 py-2 text-sm font-medium {% if current == 'country-list' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">Países</a>
+          <a href="{% url 'cointype-list' %}" class="rounded-md px-3 py-2 text-sm font-medium {% if current == 'cointype-list' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">Catálogo</a>
+          <a href="{% url 'coinitem-list' %}" class="rounded-md px-3 py-2 text-sm font-medium {% if current == 'coinitem-list' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">Coleção</a>
+          <a href="{% url 'donor-list' %}" class="rounded-md px-3 py-2 text-sm font-medium {% if current == 'donor-list' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">Doadores</a>
+          <a href="{% url 'context-list' %}" class="rounded-md px-3 py-2 text-sm font-medium {% if current == 'context-list' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">Histórico</a>
+          {% endwith %}
+        </div>
+      </div>
+      <a href="/admin/" class="hidden md:block text-gray-400 hover:text-white text-sm">Admin ↗</a>
+      <button @click="mobileMenu = !mobileMenu" class="md:hidden text-gray-400 hover:text-white">
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+      </button>
+    </div>
+  </div>
+  <div x-show="mobileMenu" x-cloak class="md:hidden px-4 pb-3 space-y-1">
+    <a href="{% url 'dashboard' %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-gray-700">Dashboard</a>
+    <a href="{% url 'country-list' %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-gray-700">Países</a>
+    <a href="{% url 'cointype-list' %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-gray-700">Catálogo</a>
+    <a href="{% url 'coinitem-list' %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-gray-700">Coleção</a>
+    <a href="{% url 'donor-list' %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-gray-700">Doadores</a>
+    <a href="{% url 'context-list' %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-gray-700">Histórico</a>
+    <a href="/admin/" class="block rounded-md px-3 py-2 text-sm text-gray-400 hover:bg-gray-700">Admin ↗</a>
+  </div>
+</nav>
+
+<main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+  {% block content %}{% endblock %}
+</main>
+
+</body>
+</html>

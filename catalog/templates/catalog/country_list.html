@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Países — CoinsDB{% endblock %}
+
+{% block content %}
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <h1 class="text-2xl font-bold text-gray-900">Países</h1>
+  <div class="flex gap-2">
+    <input type="search" name="q" value="{{ q }}" placeholder="Buscar país..."
+      class="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+      hx-get="{% url 'country-list' %}" hx-trigger="input changed delay:300ms" hx-target="#results" hx-include="[name='region']">
+    <select name="region"
+      class="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+      hx-get="{% url 'country-list' %}" hx-trigger="change" hx-target="#results" hx-include="[name='q']">
+      <option value="">Todas as regiões</option>
+      {% for r in regions %}<option value="{{ r }}" {% if r == region %}selected{% endif %}>{{ r }}</option>{% endfor %}
+    </select>
+  </div>
+</div>
+<div id="results">
+  {% include "catalog/country_table.html" %}
+</div>
+{% endblock %}

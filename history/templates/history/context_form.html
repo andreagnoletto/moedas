@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} — CoinsDB{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto" x-data="aiGenerator()">
+  <div class="flex items-center gap-3 mb-6">
+    <a href="{{ back_url }}" class="text-gray-400 hover:text-gray-600">
+      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+    </a>
+    <h1 class="text-2xl font-bold text-gray-900">{{ title }}</h1>
+  </div>
+
+  {% if has_openai_key %}
+  <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border border-purple-100 p-5 mb-6">
+    <h2 class="text-sm font-semibold text-purple-900 mb-3 flex items-center gap-2">
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456Z"/></svg>
+      Gerar com IA
+    </h2>
+    <p class="text-xs text-purple-600 mb-2">Selecione o país no formulário abaixo antes de gerar — a IA usará essa informação.</p>
+    <div class="flex gap-2">
+      <input x-model="topic" type="text" placeholder="Ex: Era do Cruzeiro, Moedas do Império Romano..."
+        class="rounded-lg border border-purple-200 px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-purple-400"
+        @keydown.enter.prevent="generate">
+      <button @click="generate" :disabled="loading || !topic.trim()" type="button"
+        class="bg-purple-600 hover:bg-purple-700 disabled:bg-purple-300 text-white font-medium rounded-lg px-5 py-2 text-sm transition-colors whitespace-nowrap flex items-center gap-2">
+        <template x-if="loading">
+          <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+        </template>
+        <span x-text="loading ? 'Gerando...' : 'Gerar'"></span>
+      </button>
+    </div>
+    <p x-show="error" x-text="error" class="text-red-600 text-xs mt-2"></p>
+  </div>
+  {% endif %}
+
+  <form method="post" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
+    {% csrf_token %}
+    {% for field in form %}
+    <div>
+      <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+      {{ field }}
+      {% if field.help_text %}<p class="text-xs text-gray-400 mt-1 leading-relaxed">{{ field.help_text|safe }}</p>{% endif %}
+      {% if field.errors %}<p class="text-red-600 text-xs mt-1">{{ field.errors.0 }}</p>{% endif %}
+    </div>
+    {% endfor %}
+
+    <div class="flex gap-3 pt-2">
+      <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-lg px-5 py-2.5 text-sm transition-colors">Salvar</button>
+      <a href="{{ back_url }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg px-5 py-2.5 text-sm transition-colors">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+<script>
+function aiGenerator() {
+  return {
+    topic: '',
+    loading: false,
+    error: '',
+    async generate() {
+      const f = (id) => document.getElementById(id);
+      const countrySel = f('id_country');
+      const countryName = countrySel?.selectedOptions[0]?.text || '';
+
+      this.loading = true;
+      this.error = '';
+      try {
+        const resp = await fetch('{% url "context-generate-ai" %}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+          },
+          body: JSON.stringify({ topic: this.topic, country_name: countryName }),
+        });
+        const data = await resp.json();
+        if (!resp.ok) { this.error = data.error; return; }
+
+        if (data.title) f('id_title').value = data.title;
+        if (data.period_start) f('id_period_start').value = data.period_start;
+        if (data.period_end) f('id_period_end').value = data.period_end;
+        if (data.description) f('id_description').value = data.description;
+        if (data.sources) f('id_sources').value = data.sources;
+      } catch (e) {
+        this.error = 'Erro de conexão: ' + e.message;
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
+}
+</script>
+{% endblock %}

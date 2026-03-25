@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: coinsdb
+      POSTGRES_USER: coins
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-coins}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U coins -d coinsdb"]
+      interval: 3s
+      retries: 5
+
+  web:
+    build: .
+    environment:
+      - DATABASE_URL=postgres://coins:${POSTGRES_PASSWORD:-coins}@db:5432/coinsdb
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-dev-secret-key-change-in-production}
+      - DEBUG=${DEBUG:-False}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-*}
+      - CSRF_TRUSTED_ORIGINS=${CSRF_TRUSTED_ORIGINS:-}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

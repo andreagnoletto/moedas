@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Apagar — CoinsDB{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-12">
+  <div class="bg-white rounded-xl shadow-sm border border-red-100 p-6 text-center">
+    <div class="text-red-500 text-4xl mb-4">⚠</div>
+    <h1 class="text-lg font-bold text-gray-900 mb-2">Confirmar exclusão</h1>
+    <p class="text-sm text-gray-500 mb-6">Deseja apagar <strong>{{ object }}</strong>?<br>O registro poderá ser restaurado pelo admin.</p>
+    <form method="post" class="flex gap-3 justify-center">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ back_url }}">
+      <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg px-5 py-2.5 text-sm transition-colors">Apagar</button>
+      <a href="{{ back_url }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg px-5 py-2.5 text-sm transition-colors">Cancelar</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
