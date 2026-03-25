@@ -10,4 +10,5 @@ dependencies = [
     "gunicorn>=25.2.0",
     "openai>=2.21.0",
     "psycopg[binary]>=3.3.3",
+    "whitenoise>=6.12.0",
 ]
