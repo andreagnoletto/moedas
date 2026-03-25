@@ -4,7 +4,7 @@
   <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5" x-data="{ open: false }">
     <div class="flex items-start justify-between cursor-pointer" @click="open = !open">
       <div>
-        <h3 class="font-semibold text-gray-900">{{ ctx.title }} <a href="{% url 'context-edit' ctx.pk %}" @click.stop class="text-gray-400 hover:text-amber-600 text-xs font-normal ml-1">editar</a> <a href="{% url 'context-delete' ctx.pk %}" @click.stop class="text-red-300 hover:text-red-500 text-xs font-normal">apagar</a></h3>
+        <h3 class="font-semibold text-gray-900">{{ ctx.title }}{% if user.is_authenticated %} <a href="{% url 'context-edit' ctx.pk %}" @click.stop class="text-gray-400 hover:text-amber-600 text-xs font-normal ml-1">editar</a> <a href="{% url 'context-delete' ctx.pk %}" @click.stop class="text-red-300 hover:text-red-500 text-xs font-normal">apagar</a>{% endif %}</h3>
         <p class="text-sm text-gray-500 mt-1">
           {% if ctx.country %}{{ ctx.country.name }} · {% endif %}
           {% if ctx.period_start %}{{ ctx.period_start|date:"Y" }}{% endif %}{% if ctx.period_end %} — {{ ctx.period_end|date:"Y" }}{% endif %}

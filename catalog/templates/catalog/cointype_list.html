@@ -7,7 +7,7 @@
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
   <div class="flex items-center gap-3">
     <h1 class="text-2xl font-bold text-gray-900">Catálogo</h1>
-    <a href="{% url 'cointype-create' %}" class="bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-lg px-4 py-2 text-sm transition-colors">+ Novo tipo</a>
+    {% if user.is_authenticated %}<a href="{% url 'cointype-create' %}" class="bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-lg px-4 py-2 text-sm transition-colors">+ Novo tipo</a>{% endif %}
     <button @click="exportSelected('{% url 'export-cointypes' %}')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg px-4 py-2 text-sm transition-colors">Exportar CSV</button>
   </div>
   <div class="flex flex-wrap gap-2">

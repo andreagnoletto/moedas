@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
@@ -28,6 +29,7 @@ def context_list(request):
     return render(request, "history/context_list.html", ctx)
 
 
+@login_required
 def context_create(request):
     form = HistoricalContextForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
@@ -40,6 +42,7 @@ def context_create(request):
     })
 
 
+@login_required
 def context_edit(request, pk):
     obj = HistoricalContext.objects.get(pk=pk)
     form = HistoricalContextForm(request.POST or None, instance=obj)
@@ -49,6 +52,7 @@ def context_edit(request, pk):
     return render(request, "_form.html", {"form": form, "title": f"Editar {obj}", "back_url": "/historico/"})
 
 
+@login_required
 def context_delete(request, pk):
     obj = HistoricalContext.objects.get(pk=pk)
     if request.method == "POST":

@@ -1,6 +1,7 @@
 import csv
 import json
 
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Count, Sum
 from django.http import HttpResponse, JsonResponse
@@ -88,6 +89,7 @@ def _cointype_form_ctx(form, title):
     return {"form": form, "title": title, "back_url": "/catalogo/", "has_openai_key": has_api_key()}
 
 
+@login_required
 def cointype_create(request):
     form = CoinTypeForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
@@ -96,6 +98,7 @@ def cointype_create(request):
     return render(request, "catalog/cointype_form.html", _cointype_form_ctx(form, "Novo tipo de moeda"))
 
 
+@login_required
 def cointype_edit(request, pk):
     obj = CoinType.objects.get(pk=pk)
     form = CoinTypeForm(request.POST or None, instance=obj)
@@ -105,6 +108,7 @@ def cointype_edit(request, pk):
     return render(request, "catalog/cointype_form.html", _cointype_form_ctx(form, f"Editar {obj}"))
 
 
+@login_required
 def cointype_delete(request, pk):
     obj = CoinType.objects.get(pk=pk)
     if request.method == "POST":

@@ -1,6 +1,7 @@
 import csv
 import json
 
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Sum
 from django.http import HttpResponse, JsonResponse
@@ -69,6 +70,7 @@ def coinitem_list(request):
     return render(request, "collection/coinitem_list.html", ctx)
 
 
+@login_required
 def coinitem_create(request):
     initial = {}
     coin_type_id = request.GET.get("coin_type")
@@ -84,6 +86,7 @@ def coinitem_create(request):
     })
 
 
+@login_required
 def coinitem_edit(request, pk):
     obj = CoinItem.objects.get(pk=pk)
     back_url = request.GET.get("next", request.META.get("HTTP_REFERER", "/colecao/"))
@@ -97,6 +100,7 @@ def coinitem_edit(request, pk):
     })
 
 
+@login_required
 def coinitem_delete(request, pk):
     obj = CoinItem.objects.get(pk=pk)
     back_url = request.GET.get("next", request.META.get("HTTP_REFERER", "/colecao/"))
@@ -212,6 +216,7 @@ def donor_list(request):
     return render(request, "collection/donor_list.html", ctx)
 
 
+@login_required
 def donor_create(request):
     form = DonorForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
@@ -220,6 +225,7 @@ def donor_create(request):
     return render(request, "_form.html", {"form": form, "title": "Novo doador", "back_url": "/doadores/"})
 
 
+@login_required
 def donor_edit(request, pk):
     obj = Donor.objects.get(pk=pk)
     form = DonorForm(request.POST or None, instance=obj)
@@ -229,6 +235,7 @@ def donor_edit(request, pk):
     return render(request, "_form.html", {"form": form, "title": f"Editar {obj}", "back_url": "/doadores/"})
 
 
+@login_required
 def donor_delete(request, pk):
     obj = Donor.objects.get(pk=pk)
     if request.method == "POST":

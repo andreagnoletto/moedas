@@ -5,7 +5,7 @@
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
   <div class="flex items-center gap-3">
     <h1 class="text-2xl font-bold text-gray-900">Contextos Históricos</h1>
-    <a href="{% url 'context-create' %}" class="bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-lg px-4 py-2 text-sm transition-colors">+ Novo contexto</a>
+    {% if user.is_authenticated %}<a href="{% url 'context-create' %}" class="bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-lg px-4 py-2 text-sm transition-colors">+ Novo contexto</a>{% endif %}
   </div>
   <div class="flex gap-2">
     <input type="search" name="q" value="{{ q }}" placeholder="Buscar título..."

@@ -42,7 +42,7 @@
           <td class="px-4 py-3 text-gray-500">{{ item.location|default:"—" }}</td>
           <td class="px-4 py-3 text-right text-gray-500">{% if item.cost_brl %}R$ {{ item.cost_brl|floatformat:2 }}{% else %}—{% endif %}</td>
           <td class="px-4 py-3 text-right font-medium text-green-700">{% if item.estimated_value_brl %}R$ {{ item.estimated_value_brl|floatformat:2 }}{% else %}—{% endif %}</td>
-          <td class="px-4 py-3 text-right whitespace-nowrap"><a href="{% url 'coinitem-edit' item.pk %}" class="text-gray-400 hover:text-amber-600 text-xs">editar</a> <a href="{% url 'coinitem-delete' item.pk %}" class="text-red-300 hover:text-red-500 text-xs">apagar</a></td>
+          <td class="px-4 py-3 text-right whitespace-nowrap">{% if user.is_authenticated %}<a href="{% url 'coinitem-edit' item.pk %}" class="text-gray-400 hover:text-amber-600 text-xs">editar</a> <a href="{% url 'coinitem-delete' item.pk %}" class="text-red-300 hover:text-red-500 text-xs">apagar</a>{% endif %}</td>
         </tr>
         {% empty %}
         <tr><td colspan="11" class="px-4 py-8 text-center text-gray-400">Nenhum item na coleção.</td></tr>

@@ -30,7 +30,15 @@
           {% endwith %}
         </div>
       </div>
-      <a href="/admin/" class="hidden md:block text-gray-400 hover:text-white text-sm">Admin ↗</a>
+      <div class="hidden md:flex items-center gap-3">
+        {% if user.is_authenticated %}
+        <span class="text-gray-400 text-sm">{{ user.username }}</span>
+        <a href="/admin/" class="text-gray-400 hover:text-white text-sm">Admin ↗</a>
+        <a href="{% url 'logout' %}" class="text-gray-400 hover:text-white text-sm">Sair</a>
+        {% else %}
+        <a href="{% url 'login' %}" class="text-gray-300 hover:text-white text-sm font-medium">Entrar</a>
+        {% endif %}
+      </div>
       <button @click="mobileMenu = !mobileMenu" class="md:hidden text-gray-400 hover:text-white">
         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
       </button>
